@@ -166,7 +166,7 @@ printf("Total de discos a serem inseridos: ");
 scanf(" %d", &n);
 int minimo = pow(2, n) - 1;
 char resposta;
-if(n > 4){
+if(n > 5){
     printf("\nO mínimo de jogadas para concluir é %d, certeza da quantidade de discos?(s/n)  ", minimo);
     resposta = getch();
     if(resposta == 'n'){
@@ -175,13 +175,8 @@ if(n > 4){
         return ' ';
     }
 }
-else printf("O mínimo de jogadas é %d\n\n", minimo);
-printf("\nDigite 1 para jogar e 2 para ver o programa resolver passo a passo.\n");
+else printf("\nO mínimo de jogadas é %d\n\n", minimo);
 }
-
-
-
-void gameplay();
 
 int main(void) {
 
@@ -194,106 +189,14 @@ pilha2->topo = NULL;
 pilha3->topo = NULL;
 /*A flag serve para indicar até onde eu preciso esvaziar a pilha. Sendo 0 o valor para esvaziar a pilha por completo*/
 int flag = 0;
-char escolha = getch();
-if(escolha == '1'){
-    system("cls");
-    usleep(100000);
-    gameplay();
-}else{
-    printf("\n\nPressione qualquer tecla para ir pra próxima jogada ou 'f' para ir automático\n\n");
-    imprime();
-    int contador = 1;
-    jogada(pilha1, pilha3, pilha2, &flag);
-    while(pilha3->topo->peso != 1){
-        if(contador % 2 == 0){
-            jogada(pilha1, pilha3, pilha2, &flag);
-        }else{
-            jogada(pilha2, pilha3, pilha1, &flag);
-        }
-        contador++;
-    }
+printf("\n\nPressione qualquer tecla para ir pra próxima jogada ou 'f' para ir automático\n\n");
+imprime();
+int contador = 1;
+jogada(pilha1, pilha3, pilha2, &flag);
+while(pilha3->topo->peso != 1){
+    if(contador % 2 == 0)jogada(pilha1, pilha3, pilha2, &flag);
+    else jogada(pilha2, pilha3, pilha1, &flag);
+    contador++;
 }
-printf("\n\nObrigado por jogar!");
 return 1;
-}
-
-void gameplay(){
-    printf("Como jogar: Há dois campos para serem preenchidos, a torre da qual se deseja remover o disco do topo e a torre para a qual o disco será movido.\n");
-    printf("Comandos: 'q' para sair, 'v' para voltar a jogada e 'r' para reiniciar\n");
-    printf("Preencha os campos e pressione enter para fazer uma jogada. Bom jogo!\n\n");
-    int controlador = 1;
-    char edit;
-    char alvo;
-    Pilha* pedit;
-    Pilha* palvo;
-    /*Há um loop principal encarregado de carregar a jogada do usuário. Dependendo da jogada o loop se encerra*/
-    while(controlador){    
-        printf("\n1ª  2ª  3ª\n\n");
-        imprime();
-        /*
-        Esquema de coordenada. Escolhe a torre que quer mexer e escolhe a torre para qual quer mover o disco.
-        Fiz com que em qualquer etapa da coordenada seja possível reiniciar, voltar a jogada e sair.
-        */
-        printf("\n\nEditar torre: ");
-        scanf(" %c", &edit);
-        switch(edit)
-        {
-            case '1': pedit = pilha1;break;
-            case '2': pedit = pilha2;break;
-            case '3': pedit = pilha3;break;
-            case 'v':{
-                aloca(palvo, pedit);
-            }break;
-            case 'r':{
-                system("cls");
-                main();
-                exit(1);
-            };break;
-        }
-        if(edit == 'q')break;
-        else if(edit == 'v')continue;
-        printf("Torre alvo: ");
-        scanf(" %c", &alvo);
-        switch(alvo)
-        {
-            case '1': palvo = pilha1;break;
-            case '2': palvo = pilha2;break;
-            case '3': palvo = pilha3;break;
-            case 'v':{
-                aloca(palvo, pedit);
-            }break;
-            case 'r':{
-                system("cls");
-                main();
-                exit(1);
-            }
-        }
-        if(alvo == 'q')break;
-        else if(alvo == 'v')continue;
-        if(pedit->topo == NULL){
-        printf("Não há disco para ser movido na torre, por favor tente novamente.\nPressione qualquer tecla pra continuar ");
-        getch();
-        controlador = 0;
-        }
-        if(palvo->topo != NULL && pedit->topo->peso > palvo->topo->peso){
-            printf("\nAção proibida. O disco que você está querendo mover é maior que o disco da torre alvo. Tente novamente.\n");
-            printf("Pressione qualquer tecla pra continuar\n\n");
-            getch();
-            continue;
-        }
-        if(controlador){
-            aloca(pedit, palvo);
-            jogadas++;
-        }
-        else{
-            controlador = 1;
-        }
-        //Aqui eu controlo se o jogo acabou ou não. Se só a torre3 estiver com discos, quer dizer que o jogador conseguiu colocar os discos nela.
-        if(pilha3->topo != NULL && pilha2->topo == NULL && pilha1->topo == NULL){
-            int minimo = pow(2, n) - 1;
-            printf("\nParabéns, o mínimo de jogadas para concluir era %d e você concluiu em %d jogadas", minimo, jogadas);
-            imprime();
-            controlador = 0;
-        }
-    } 
 }
